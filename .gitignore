@@ -8,9 +8,6 @@ pnpm-debug.log*
 lerna-debug.log*
 
 node_modules
-.env
-/env
-env
 dist
 dist-ssr
 *.local
@@ -25,8 +22,5 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-/chat-bot/.env
 .env
-/.env
-/chat-bot/.env
-/chat-bot/node_modules
+
