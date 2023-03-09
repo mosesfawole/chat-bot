@@ -1,5 +1,5 @@
 import "@chatscope/chat-ui-kit-styles/dist/default/styles.min.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   MainContainer,
   ChatContainer,
@@ -17,8 +17,14 @@ function App() {
     },
   ]);
   const [typing, setTyping] = useState(false);
-
+  const [error, setError] = useState(false);
   const apiKey = import.meta.env.VITE_OPENAI_KEY;
+
+  useEffect(() => {
+    const items = JSON.parse(localStorage.getItem("messages"));
+
+    if (items) setMessages(items);
+  }, []);
 
   const handleSubmit = async (message) => {
     const newMessage = {
@@ -34,9 +40,9 @@ function App() {
     // set typing indicator
     setTyping(true);
     await processMessages(newMessages);
-    // process mesaage to chatgpt
   };
 
+  // process mesaage to chatgpt
   const processMessages = async (chatMessages) => {
     let apiMessages = chatMessages.map((messageObj) => {
       let role = "";
@@ -52,7 +58,7 @@ function App() {
     // system == generally one initial message defining How we want chat gpt to talk
     const systemMessage = {
       role: "system",
-      content: "Speak like a pirate",
+      content: "Speak in yourba dialect",
     };
     const apiRequestBody = {
       model: "gpt-3.5-turbo",
@@ -80,16 +86,35 @@ function App() {
             sender: "ChatGPT",
           },
         ]);
+
         setTyping(false);
+
+        // save to local storage
+        localStorage.setItem("messages", JSON.stringify(messages));
+      })
+      .catch((error) => {
+        console.error(error);
       });
   };
+
+  const clearChats = () => {
+    setMessages([]);
+  };
+
   return (
     <div className="App">
+      <div className="header">
+        <h1 style={{ textAlign: "center" }}>Welcome to ChatGeePeeTee 😃</h1>
+        <div className="btn">
+          <button onClick={clearChats} className="btn">
+            New Chat
+          </button>
+        </div>
+      </div>
       <div className="box">
         <MainContainer>
           <ChatContainer>
             <MessageList
-              color="green"
               scrollBehavior="smooth"
               typingIndicator={
                 typing ? (
