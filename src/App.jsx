@@ -11,16 +11,41 @@ import {
 
 function App() {
   const [messages, setMessages] = useState([]);
+  const [history, setHistory] = useState([]);
+  const [showHistory, setShowHistory] = useState(false);
 
   const [typing, setTyping] = useState(false);
   const apiKey = import.meta.env.VITE_OPENAI_KEY;
 
   // get saved messages
-  useEffect(() => {
-    const items = JSON.parse(localStorage.getItem("messages"));
 
-    if (items) setMessages(items);
-  }, []);
+  const getHistory = async () => {
+    const items = await JSON.parse(localStorage.getItem("messages"));
+    if (items) {
+      setMessages(items);
+      console.log(items);
+    }
+  };
+  useEffect(() => {
+    window.addEventListener("beforeunload", clearChats);
+    const items = localStorage.getItem("title");
+
+    if (items) setHistory(items);
+
+    if (showHistory === true) {
+      getHistory();
+    }
+    return () => {
+      window.removeEventListener("beforeunload", clearChats);
+    };
+  }, [showHistory]);
+
+  const handleHistory = () => {
+    if (history.length > 0) {
+      setShowHistory(true);
+    }
+    console.log(showHistory);
+  };
 
   const handleSubmit = async (message) => {
     //  open ai
@@ -36,6 +61,9 @@ function App() {
 
     // set typing indicator
     setTyping(true);
+    setHistory(newMessage.message);
+
+    localStorage.setItem("title", history);
     await processMessages(newMessages);
   };
 
@@ -99,36 +127,44 @@ function App() {
 
   const clearChats = () => {
     setMessages([]);
+    // localStorage.removeItem("title", "messages");
   };
 
   return (
-    <div className="App">
+    <div className="">
       <div className="header">
-        <h1 style={{ textAlign: "center" }}>Welcome to ChatGeePeeTee 😃</h1>
+        <p style={{ textAlign: "center" }}>Welcome to ChatGeePeeTee 😃</p>
         <div className="btn">
           <button onClick={clearChats} className="btn">
             New Chat
           </button>
+          <div className="history">
+            <button className="his" onClick={handleHistory}>
+              {history}
+            </button>
+          </div>
         </div>
       </div>
-      <div className="box">
-        <MainContainer>
-          <ChatContainer>
-            <MessageList
-              scrollBehavior="smooth"
-              typingIndicator={
-                typing ? (
-                  <TypingIndicator content="ChatGeePeeTee is typing" />
-                ) : null
-              }
-            >
-              {messages.map((message, index) => (
-                <Message key={index} model={message} />
-              ))}
-            </MessageList>
-            <MessageInput placeholder="Enter message" onSend={handleSubmit} />
-          </ChatContainer>
-        </MainContainer>
+      <div className="wrapper">
+        <div className="box">
+          <MainContainer>
+            <ChatContainer>
+              <MessageList
+                scrollBehavior="smooth"
+                typingIndicator={
+                  typing ? (
+                    <TypingIndicator content="ChatGeePeeTee is typing" />
+                  ) : null
+                }
+              >
+                {messages.map((message, index) => (
+                  <Message key={index} model={message} />
+                ))}
+              </MessageList>
+              <MessageInput placeholder="Enter message" onSend={handleSubmit} />
+            </ChatContainer>
+          </MainContainer>
+        </div>
       </div>
     </div>
   );
