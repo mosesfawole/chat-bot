@@ -30,11 +30,13 @@
 
 .btn button {
   padding: 12px;
+  border-radius: 8px;
 }
 button {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   border: none;
   cursor: pointer;
+  border-radius: 12px;
 }
 button:hover {
   outline: 1px solid;
@@ -57,4 +59,12 @@ button:hover {
   bottom: 0;
   width: 100%;
   overflow: auto;
+}
+.clear {
+  position: absolute;
+  right: 20px;
+  padding: 4px;
+  background-color: red;
+  color: white;
+  font-weight: 600;
 }

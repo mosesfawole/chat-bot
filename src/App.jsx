@@ -27,7 +27,8 @@ function App() {
     }
   };
   useEffect(() => {
-    window.addEventListener("beforeunload", clearChats);
+    // on page refresh
+    window.addEventListener("beforeunload", refresh);
     const items = localStorage.getItem("title");
 
     if (items) setHistory(items);
@@ -36,7 +37,7 @@ function App() {
       getHistory();
     }
     return () => {
-      window.removeEventListener("beforeunload", clearChats);
+      window.removeEventListener("beforeunload", refresh);
     };
   }, [showHistory]);
 
@@ -125,9 +126,13 @@ function App() {
       });
   };
 
-  const clearChats = () => {
+  const refresh = () => {
     setMessages([]);
-    // localStorage.removeItem("title", "messages");
+  };
+  const clearChats = () => {
+    setHistory([]);
+    setMessages([]);
+    localStorage.removeItem("title", "messages");
   };
 
   return (
@@ -135,15 +140,20 @@ function App() {
       <div className="header">
         <p style={{ textAlign: "center" }}>Welcome to ChatGeePeeTee 😃</p>
         <div className="btn">
-          <button onClick={clearChats} className="btn">
+          <button onClick={refresh} className="btn">
             New Chat
           </button>
+          <br />
+
           <div className="history">
             <button className="his" onClick={handleHistory}>
               {history}
             </button>
           </div>
         </div>
+        <button onClick={clearChats} className="clear">
+          Clear chats
+        </button>
       </div>
       <div className="wrapper">
         <div className="box">
