@@ -10,16 +10,12 @@ import {
 } from "@chatscope/chat-ui-kit-react";
 
 function App() {
-  const [messages, setMessages] = useState([
-    {
-      message: "Hello, I am ChatGeePeeTee",
-      sender: "ChatGeePeeTEe",
-    },
-  ]);
+  const [messages, setMessages] = useState([]);
+
   const [typing, setTyping] = useState(false);
-  const [error, setError] = useState(false);
   const apiKey = import.meta.env.VITE_OPENAI_KEY;
 
+  // get saved messages
   useEffect(() => {
     const items = JSON.parse(localStorage.getItem("messages"));
 
@@ -27,6 +23,7 @@ function App() {
   }, []);
 
   const handleSubmit = async (message) => {
+    //  open ai
     const newMessage = {
       message: message,
       sender: "user",
@@ -58,7 +55,7 @@ function App() {
     // system == generally one initial message defining How we want chat gpt to talk
     const systemMessage = {
       role: "system",
-      content: "Speak in yourba dialect",
+      content: "Speak with british slangs",
     };
     const apiRequestBody = {
       model: "gpt-3.5-turbo",
@@ -79,19 +76,22 @@ function App() {
       .then((data) => {
         // console.log(data);
         // console.log(data.choices[0].message.content);
+
+        let message = data.choices[0].message.content;
+
         setMessages([
           ...chatMessages,
           {
-            message: data.choices[0].message.content,
+            message: message,
             sender: "ChatGPT",
           },
         ]);
 
         setTyping(false);
-
         // save to local storage
         localStorage.setItem("messages", JSON.stringify(messages));
       })
+
       .catch((error) => {
         console.error(error);
       });

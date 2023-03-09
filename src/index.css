@@ -13,28 +13,32 @@
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
 }
+
 * {
   padding: 0;
   margin: 0;
   box-sizing: border-box;
 }
-
 .box {
   position: relative;
-  height: 90vh;
   width: 100%;
+  height: 100vh;
 }
+
 .btn {
   display: flex;
-  justify-content: center;
+  justify-content: flex-end;
   align-items: center;
   margin: 10px;
+}
+
+button {
   padding: 12px;
   border: none;
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   cursor: pointer;
 }
-btn:hover {
+button:hover {
   outline: 1px solid gray;
   transition: all 0.3s ease-in-out;
 }
