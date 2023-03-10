@@ -89,6 +89,11 @@ function App() {
     const apiRequestBody = {
       model: "gpt-3.5-turbo",
       messages: [systemMessage, ...apiMessages],
+      temperature: 0.9,
+      max_tokens: 150,
+      top_p: 1,
+      frequency_penalty: 0.0,
+      presence_penalty: 0.6,
     };
 
     await fetch("https://api.openai.com/v1/chat/completions", {
